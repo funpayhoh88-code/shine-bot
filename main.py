@@ -99,7 +99,7 @@ async def vote(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # --------------------------
 # ЗАПУСК БОТА
 # --------------------------
-TOKEN = os.environ["BOT_TOKEN"]
+TOKEN = os.environ[8315582975:AAGIkmwYVcDbB5g8zwIry-xvw2hg5mvUFUQ]
 app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
