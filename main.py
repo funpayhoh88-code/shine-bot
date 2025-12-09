@@ -1,5 +1,6 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
+import os
 
 # --------------------------
 # СПИСКИ УЧЕНИКОВ
@@ -8,11 +9,11 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 boys = [
     "Азметов Руслан", "Артонкин Артем", "Баракин Арсений", "Афанасьев Павел",
     "Смирнов Серафим", "Фитисов Леонид", "Желтов Стас", "Казаченко Тимофей",
-    "Можавьев Артемий", "Карницкий Ян", "Чубара Матвей", "Ерошкин Тимофей"
+    "Можавев Артемий", "Карницкий Ян", "Чубара Матвей", "Ерошкин Тимофей"
 ]
 
 girls = [
-    "Азметова Лиля", "Сапожникова Анастасия", "Кузьмина Мария", "Павлова Василиса",
+    "Азметова Лиля", "Сапожникова Анастасия", "Кузмина Мария", "Павлова Василиса",
     "Рябова Алиса", "Власова Дарья", "Литвиненко Кира", "Кленина Вера",
     "Файзулина Дарья", "Лисовая Анастасия", "Масленкова Мария", "Веркаускас Мария"
 ]
@@ -38,28 +39,27 @@ nominations = {
     "Shine Track": all_students
 }
 
-# Хранилище голосов
-votes = {}
+# --------------------------
+# Хранение голосов
+# --------------------------
+votes = {}  # user_id -> {nomination: name}
 
 # --------------------------
 # КОМАНДА /start
 # --------------------------
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton(nom, callback_data=f"nom:{nom}")]
         for nom in nominations
     ]
-
     await update.message.reply_text(
-        "Добро пожаловать в голосование Shine Awards!\n\nВыберите номинацию:",
+        "Добро пожаловать на голосование Shine Awards!\n\nВыберите номинацию:",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
 # --------------------------
 # ВЫБОР НОМИНАЦИИ
 # --------------------------
-
 async def choose_nomination(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -80,7 +80,6 @@ async def choose_nomination(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # --------------------------
 # ГОЛОСОВАНИЕ
 # --------------------------
-
 async def vote(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -100,8 +99,8 @@ async def vote(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # --------------------------
 # ЗАПУСК БОТА
 # --------------------------
-
-app = ApplicationBuilder().token(8315582975:AAGIkmwYVcDbB5g8zwIry-xvw2hg5mvUFUQ).build()
+TOKEN = os.environ["BOT_TOKEN"]
+app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CallbackQueryHandler(choose_nomination, pattern="nom"))
